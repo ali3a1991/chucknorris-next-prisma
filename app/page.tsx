@@ -1,41 +1,24 @@
-"use client";
-
 import Image from "next/image";
-import fetchRandomJoke from "@/lib/fetchJoke";
-import { useEffect, useState } from "react";
-import { getVisitor, setVisitor } from "@/lib/visitorPrisma";
+import Footer from "@/components/Footer";
+import { revalidateTag } from "next/cache";
 
-export default function Home() {
-  const [joke, setJoke] = useState("");
-  const [visitedNum, setVisitedNum] = useState(0);
+type ResponseData = {
+  value: string;
+};
 
-  useEffect(() => {
-    // Ich möchte den Besucher-Anzahl eins hoch gehen wenn jemanden browser schließt und öffnet aber mit refresh geht es nicht hoch
-    const visited = sessionStorage.getItem("visited");
-    if (visited === "true") {
-      getVisitor().then((value) => {
-        if (value) {
-          setVisitedNum(value);
-        }
-      });
-    } else {
-      sessionStorage.setItem("visited", "true");
-      setVisitor().then((value) => {
-        if (value) {
-          setVisitedNum(value);
-        }
-      });
-    }
-    getNextRandomJoke();
-  }, []);
+export default async function Home() {
+  const response = await fetch("https://api.chucknorris.io/jokes/random", {
+    cache: "no-cache",
+    next: {
+      tags: ["joke"],
+    },
+  });
+  let data: ResponseData = await response.json();
 
-  const getNextRandomJoke = () => {
-    fetchRandomJoke().then((value) => {
-      if (value) {
-        setJoke(value);
-      }
-    });
-  };
+  async function getNextRandomJoke() {
+    "use server";
+    revalidateTag("joke");
+  }
 
   return (
     <div>
@@ -52,18 +35,15 @@ export default function Home() {
           alt="Image not available"
         />
         <div className="flex flex-col justify-between w-[70%] h-[70%] py-3 items-center">
-          <p className="text-center text-2xl">{joke}</p>
-          <button
-            onClick={getNextRandomJoke}
-            className="border-2 rounded-2xl w-[50%] py-2 hover:bg-slate-400 font-bold transition-colors"
-          >
-            Next
-          </button>
+          <p className="text-center text-2xl">{data.value}</p>
+          <form className="w-[100%] text-center" action={getNextRandomJoke}>
+            <button className="border-2 rounded-2xl py-2 w-[50%] hover:bg-slate-400 font-bold transition-colors">
+              Next
+            </button>
+          </form>
         </div>
       </main>
-      <footer className="flex h-[100px] items-center px-12 rounded-t-3xl bg-gray-300 font-bold text-3xl">
-        {visitedNum ? <p>Visior: {visitedNum}</p> : null}
-      </footer>
+      <Footer />
     </div>
   );
 }
