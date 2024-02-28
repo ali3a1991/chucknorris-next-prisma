@@ -23,8 +23,8 @@ function Footer() {
         }
       });
     }
-  }, [])
-  
+  }, []);
+
   return (
     <footer className="flex h-[100px] items-center px-12 rounded-t-3xl bg-gray-300 font-bold text-3xl">
       {visitedNum ? <p>Visior: {visitedNum}</p> : null}

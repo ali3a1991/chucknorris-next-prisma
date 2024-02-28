@@ -2,14 +2,11 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Main from "@/components/Main";
 
-
-export default async function Home() {
-  
-
+export default function Home() {
   return (
     <div>
-      <Header/>
-      <Main/>
+      <Header />
+      <Main />
       <Footer />
     </div>
   );
