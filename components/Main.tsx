@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import QuoteComponent from "./QuoteComponent";
+import QuoteComponent from "./QuoteCount";
 
 function Main() {
   return (

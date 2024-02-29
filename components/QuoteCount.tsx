@@ -24,7 +24,7 @@ async function QuoteComponent() {
     <div className="flex flex-col justify-between w-[70%] h-[70%] py-3 items-center">
       <p className="text-center text-2xl">{data.value}</p>
       <form className="w-[100%] text-center" action={getNextRandomJoke}>
-        <CustomButtom />
+        <CustomButtom btnValue ='Next' />
       </form>
     </div>
   );
